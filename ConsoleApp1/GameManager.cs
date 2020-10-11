@@ -3,11 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace ConsoleApp1
+namespace Las_Vegas
 {
     public class Dice
     {
         private int playerNum;
+        private int color;
         private int colerDiceCount;
         private int whiteDiceCount;
         private ArrayList arrColerDice = new ArrayList();
@@ -15,9 +16,10 @@ namespace ConsoleApp1
 
         Random rand = new Random();
 
-        public Dice(int playerNum)//생성자
+        public Dice(int playerNum, int color)//생성자
         {
             Debug.Assert(playerNum > 0 && playerNum < 6,"Player number is Wrong");
+            this.color = color; //색을 클래스를 생성할 때 지정해 주자
             this.playerNum = playerNum;
             if (this.playerNum <= 4)
             {
@@ -119,7 +121,7 @@ namespace ConsoleApp1
         {
             for (int i = 0; i < 6; i++)
             {
-                this.casinoDice[i].AddRange(new int[5] { 0, 0, 0, 0, 0 });//빨, 초, 파, 검, 흰 순서임 R, G, B, W, 
+                this.casinoDice[i].AddRange(new int[5] { 0, 0, 0, 0, 0 });//빨, 초, 파, 검, 흰 순서임 R, G, BU, BL, W, 
 
             }
         }
@@ -247,7 +249,7 @@ namespace ConsoleApp1
 
     }
 
-    class Program
+    class GameManager
     {
         static void Main(string[] args)
         {
