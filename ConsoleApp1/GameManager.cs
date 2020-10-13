@@ -11,8 +11,10 @@ namespace Las_Vegas
         private int color;
         private int colerDiceCount;
         private int whiteDiceCount;
-        private ArrayList arrColerDice = new ArrayList();
-        private ArrayList arrWhiteDice = new ArrayList();
+        private int[] arrColerDice = new int[6];
+        private int[] arrWhiteDice = new int[6];
+       //private ArrayList arrColerDice = new ArrayList();
+        //private ArrayList arrWhiteDice = new ArrayList();
 
         Random rand = new Random();
 
@@ -32,68 +34,91 @@ namespace Las_Vegas
             }
         }
 
-        public int whiteDiceIs()//흰색 주사위 갯수
+        public int readWhiteDices()//흰색 주사위 갯수
         {
             return this.whiteDiceCount;
         }
         public void rollDice()//주사위 굴리기(내가 가진 주사위 갯수만큼)
         {
             int temp;
-            this.arrColerDice.Clear();
-            this.arrWhiteDice.Clear();
+            Array.Clear(arrColerDice, 0, 6);
+            Array.Clear(arrWhiteDice, 0, 6);
 
             for (int i = 0; i < (this.colerDiceCount); i++)//칼라 주사위 굴리지
             {
                 temp = rand.Next(1, 6);
-                this.arrColerDice.Add(temp);
+                this.arrColerDice[temp] += 1;
             }
 
             
             for (int i = 0; i < ( this.whiteDiceCount); i++)//흰색(공통)주사위 굴리기
             {
                 temp = rand.Next(1, 6);
-                this.arrWhiteDice.Add(temp);
+                this.arrWhiteDice[temp] += 1;
             }
 
             
         }
 
-        public int pickDice(int diceNumber)//고른 주사위 갯수만큼 주사위를 뺴고 해당 갯수를 반환
+        public int pickColorDice(int diceNumber)//고른 주사위 갯수만큼 주사위를 뺴고 해당 갯수를 반환
         {
-            Debug.Assert(!this.arrColerDice.Contains(diceNumber)|| !this.arrWhiteDice.Contains(diceNumber), "Player don't have that number dice");
+            //Debug.Assert(!this.arrColerDice.Contains(diceNumber)|| !this.arrWhiteDice.Contains(diceNumber), "Player don't have that number dice");
             int diceCount = 0;
-            while (this.arrColerDice.Contains(diceNumber))
-            {
-                this.arrColerDice.Remove(diceNumber);
-                this.colerDiceCount--;
-                diceCount++;
-            }
-
-            while (this.arrWhiteDice.Contains(diceNumber))
-            {
-                this.arrWhiteDice.Remove(diceNumber);
-                this.whiteDiceCount--;
-                diceCount++;
-            }
-
+            diceCount = this.arrColerDice[diceNumber];
+            this.colerDiceCount -= diceCount;
             return diceCount;
         }
 
+        public int pickWhiteDice(int diceNumber)//고른 주사위 갯수만큼 주사위를 뺴고 해당 갯수를 반환
+        {
+            //Debug.Assert(!this.arrColerDice.Contains(diceNumber) || !this.arrWhiteDice.Contains(diceNumber), "Player don't have that number dice");
+            int diceCount = 0;
+            diceCount = this.arrWhiteDice[diceNumber];
+            this.whiteDiceCount -= diceCount;
+            return diceCount;
 
+           
+        }
+
+        public int getColor()
+        {
+            return this.color;
+        }
+
+        public void printDices()
+        {
+            Console.WriteLine("      Dice");
+            for (int i = 0; i < 6; i++)
+            {
+                Console.WriteLine("    "+i);
+            }
+            Console.WriteLine("\n");
+            Console.WriteLine("Yours     ");
+            for (int i = 0; i < 6; i++)
+            {
+                Console.WriteLine("    " + this.arrColerDice[i]);
+                           
+            }
+            Console.WriteLine("\n");
+            Console.WriteLine("White     ");
+            for (int i = 0; i < 6; i++)
+            {
+                Console.WriteLine("    " + this.arrWhiteDice[i]);
+
+            }
+
+        }
 
     }
 
-    public class Player
-    { 
-        
-    }
 
     public class Board
     {
         private Random rand = new Random();
         private List<int> money = new List<int>();
         private ArrayList[] casinoMoney = new ArrayList[6];
-        private ArrayList[] casinoDice = new ArrayList[6];
+        private int[,] casinoDice = new int[6,5];
+        //private ArrayList[] casinoDice = new ArrayList[6];
 
         public Board()
         {
@@ -101,10 +126,12 @@ namespace Las_Vegas
             this.initBoard();
             this.initDice();
         }
-
-        public void placeDice(int casinoNum, int diceCount)//배팅할 카지노, 주사위 갯수를 받음
+        
+        public void placeDice(int casinoNum, int selectedNum, Dice dice)//배팅할 카지노, 주사위 갯수를 받음
         {
-            //this.casinoDice[casinoNum + 1] += diceCount;
+            this.casinoDice[casinoNum,dice.getColor()] += dice.pickColorDice(selectedNum);
+            this.casinoDice[casinoNum, 4] += dice.pickWhiteDice(selectedNum);
+
         }
 
 
@@ -121,7 +148,11 @@ namespace Las_Vegas
         {
             for (int i = 0; i < 6; i++)
             {
-                this.casinoDice[i].AddRange(new int[5] { 0, 0, 0, 0, 0 });//빨, 초, 파, 검, 흰 순서임 R, G, BU, BL, W, 
+                for(int j=0; j < 5; j++)
+                {
+                    this.casinoDice[i,j] = 0;//빨, 초, 파, 검, 흰 순서임 R, G, BU, BL, W, 
+                }
+                
 
             }
         }
@@ -182,6 +213,43 @@ namespace Las_Vegas
             }
 
             return temp;
+        }
+
+        public void printBoard()
+        {
+            for(int i =0; i < 50; i++)
+            {
+                Console.WriteLine("*");
+            }
+            Console.WriteLine("Casino Num");
+            for (int i = 0; i < 6; i++)
+            {
+                Console.WriteLine("    "+i);
+            }
+            Console.WriteLine("\n");
+            //빨, 초, 파, 검, 흰 순서임 R, G, BU, BL, W, 
+            for (int i = 0; i < 5; i++)
+            {
+                if (i == 0) { Console.WriteLine("Red       "); }
+                else if (i == 1) { Console.WriteLine("Green     "); }
+                else if (i==2) { Console.WriteLine("Blue      "); }
+                else if (i == 3) { Console.WriteLine("Black     "); }
+                else if (i == 4) { Console.WriteLine("White     "); }
+                else { Debug.Assert(true, "Wroung color Number"); }
+                for (int j = 0; j < 6; j++)
+                {
+                    Console.WriteLine("    " +this.casinoDice[j,i]);
+                }
+
+                Console.WriteLine("\n");
+            }
+            Console.WriteLine("\n");
+
+            for (int i = 0; i < 50; i++)
+            {
+                Console.WriteLine("*");
+            }
+            Console.WriteLine("\n");
         }
 
     }
