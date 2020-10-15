@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace Las_Vegas
 {
@@ -116,14 +117,14 @@ namespace Las_Vegas
     {
         private Random rand = new Random();
         private List<int> money = new List<int>();
-        private ArrayList[] casinoMoney = new ArrayList[6];
+        private List<List<int>> casinoMoney = new List<List<int>>();
         private int[,] casinoDice = new int[6,5];
         //private ArrayList[] casinoDice = new ArrayList[6];
 
-        public Board()
+        public Board(List<List<int>> cards)
         {
-            this.initCard();
-            this.initBoard();
+            
+            this.initBoard(cards);
             this.initDice();
         }
         
@@ -136,11 +137,17 @@ namespace Las_Vegas
 
 
 
-        public void initBoard()
+        public void initBoard(List<List<int>> cards)
         {
-            for(int i = 0; i < 6; i++)
+            this.casinoMoney.Clear();
+            for (int i = 0; i < 6; i++)
             {
-                this.casinoMoney[i].AddRange(this.drawCards());
+                this.casinoMoney.Add(new List<int>());
+                foreach (var ele in cards[i])
+                {
+                    this.casinoMoney[i].Add(ele);
+                }
+                
             }
 
         }
@@ -158,98 +165,57 @@ namespace Las_Vegas
         }
 
 
-        public List<int> initCard()
-        {
 
-            for (int i = 0; i < 5; i++)
-            {
-                this.money.Add(6);
-                this.money.Add(7);
-                this.money.Add(8);
-                this.money.Add(9);
-            }
-            for (int i = 0; i < 6; i++)
-            {
-                this.money.Add(1);
-                this.money.Add(4);
-                this.money.Add(5);
-            }
-            for (int i = 0; i < 8; i++)
-            {
-                this.money.Add(2);
-                this.money.Add(3);
-            }
 
-            //카드 섞기
-            int random1;
-            int random2;
-
-            int tmp;
-
-            for (int index = 0; index < this.money.Count; ++index)
-            {
-                random1 = this.rand.Next(0, this.money.Count);
-                random2 = this.rand.Next(0, this.money.Count);
-
-                tmp = this.money[random1];
-                this.money[random1] = this.money[random2];
-                this.money[random2] = tmp;
-            }
-            //카드 섞기 출처: https://minhyeokism.tistory.com/16 [programmer-dominic.kim]
-
-            return this.money;
-
-        }
-
-        public List<int> drawCards()
-        {
-            List<int> temp = new List<int>();
-            int sum = 0;
-            while (sum < 5)
-            {
-                temp.Add(money[0]);
-                sum += money[0];
-                money.RemoveAt(0);//pop money
-            }
-
-            return temp;
-        }
 
         public void printBoard()
         {
             for(int i =0; i < 50; i++)
             {
-                Console.WriteLine("*");
+                Console.Write("*");
             }
-            Console.WriteLine("Casino Num");
+            Console.Write("\n");
+            Console.Write("Casino Num");
             for (int i = 0; i < 6; i++)
             {
-                Console.WriteLine("    "+i);
+                Console.Write("     "+(i+1));
             }
-            Console.WriteLine("\n");
+            Console.Write("\n");
             //빨, 초, 파, 검, 흰 순서임 R, G, BU, BL, W, 
             for (int i = 0; i < 5; i++)
             {
-                if (i == 0) { Console.WriteLine("Red       "); }
-                else if (i == 1) { Console.WriteLine("Green     "); }
-                else if (i==2) { Console.WriteLine("Blue      "); }
-                else if (i == 3) { Console.WriteLine("Black     "); }
-                else if (i == 4) { Console.WriteLine("White     "); }
+                if (i == 0) { Console.Write("Red       "); }
+                else if (i == 1) { Console.Write("Green     "); }
+                else if (i==2) { Console.Write("Blue      "); }
+                else if (i == 3) { Console.Write("Black     "); }
+                else if (i == 4) { Console.Write("White     "); }
                 else { Debug.Assert(true, "Wroung color Number"); }
                 for (int j = 0; j < 6; j++)
                 {
-                    Console.WriteLine("    " +this.casinoDice[j,i]);
+                    Console.Write("     " +this.casinoDice[j,i]);
                 }
 
-                Console.WriteLine("\n");
+                Console.Write("\n");
             }
-            Console.WriteLine("\n");
+            Console.Write("\n");
+
+            Console.Write("Moneys    ");
+
+            for (int i=0; i < 6; i++)
+            {
+                Console.Write("   ");
+                foreach (var money in casinoMoney[i])
+                {
+                    Console.Write(" "+money);
+                }
+            }
+            Console.Write("\n");
 
             for (int i = 0; i < 50; i++)
             {
-                Console.WriteLine("*");
+                Console.Write("*");
             }
-            Console.WriteLine("\n");
+            Console.Write("\n");
         }
 
     }
@@ -258,26 +224,27 @@ namespace Las_Vegas
         private Random rand = new Random();
         private List<int> money = new List<int>();
 
-        public List<int> initCard()
+        public void initCard()
         {
-            
+            List<int> tempmoney = new List<int>();
+
             for (int i = 0; i < 5; i++)
             {
-                this.money.Add(6);
-                this.money.Add(7);
-                this.money.Add(8);
-                this.money.Add(9);
+                tempmoney.Add(6);
+                tempmoney.Add(7);
+                tempmoney.Add(8);
+                tempmoney.Add(9);
             }
             for (int i = 0; i < 6; i++)
             {
-                this.money.Add(1);
-                this.money.Add(4);
-                this.money.Add(5);
+                tempmoney.Add(1);
+                tempmoney.Add(4);
+                tempmoney.Add(5);
             }
             for (int i = 0; i < 8; i++)
             {
-                this.money.Add(2);
-                this.money.Add(3);
+                tempmoney.Add(2);
+                tempmoney.Add(3);
             }
 
             //카드 섞기
@@ -286,42 +253,42 @@ namespace Las_Vegas
 
             int tmp;
 
-            for (int index = 0; index < this.money.Count; ++index)
+            for (int index = 0; index < tempmoney.Count; ++index)
             {
-                random1 = this.rand.Next(0, this.money.Count);
-                random2 = this.rand.Next(0, this.money.Count);
+                random1 = this.rand.Next(0, tempmoney.Count);
+                random2 = this.rand.Next(0, tempmoney.Count);
 
-                tmp = this.money[random1];
-                this.money[random1] = this.money[random2];
-                this.money[random2] = tmp;
+                tmp = tempmoney[random1];
+                tempmoney[random1] = tempmoney[random2];
+                tempmoney[random2] = tmp;
             }
             //카드 섞기 출처: https://minhyeokism.tistory.com/16 [programmer-dominic.kim]
-
-            return this.money;
+            this.money = tempmoney;
+            //return this.money;
 
         }
 
-        public List<int> drawCards()
+        public List <List<int>> drawCards()
         {
-            List<int> temp = new List<int>();
+            List<List<int>> temp = new List<List<int>>();
             int sum = 0;
-            while (sum<5)
-            {
-                temp.Add(money[0]);
-                sum += money[0];
-                money.RemoveAt(0);//pop money
-            }
 
+            for (int i = 0; i<6; i++)
+            {
+                // temp[i].Clear();
+                temp.Add(new List<int>());
+                sum = 0;
+                while (sum<5)
+                {
+                    temp[i].Add(this.money[0]);
+                    sum += this.money[0];
+                    this.money.RemoveAt(0);//pop money
+                }
+
+            }
             return temp;
         }
 
     }
 
-    class GameManager
-    {
-        static void Main(string[] args)
-        {
-            Console.WriteLine("Hello World!");
-        }
-    }
-}
+ }
