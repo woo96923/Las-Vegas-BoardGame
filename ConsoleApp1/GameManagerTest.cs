@@ -20,6 +20,9 @@ namespace Las_Vegas
             //board.initBoard();
             board.printBoard();
 
+            test.rollDice();
+            test.printDices();
+
             
         }
     }

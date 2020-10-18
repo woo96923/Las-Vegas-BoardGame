@@ -88,23 +88,23 @@ namespace Las_Vegas
 
         public void printDices()
         {
-            Console.WriteLine("      Dice");
+            Console.Write("Dice      ");
             for (int i = 0; i < 6; i++)
             {
-                Console.WriteLine("    "+i);
+                Console.Write("    "+(i+1));
             }
-            Console.WriteLine("\n");
-            Console.WriteLine("Yours     ");
+            Console.Write("\n");
+            Console.Write("Yours     ");
             for (int i = 0; i < 6; i++)
             {
-                Console.WriteLine("    " + this.arrColerDice[i]);
+                Console.Write("    " + this.arrColerDice[i]);
                            
             }
-            Console.WriteLine("\n");
-            Console.WriteLine("White     ");
+            Console.Write("\n");
+            Console.Write("White     ");
             for (int i = 0; i < 6; i++)
             {
-                Console.WriteLine("    " + this.arrWhiteDice[i]);
+                Console.Write("    " + this.arrWhiteDice[i]);
 
             }
 
