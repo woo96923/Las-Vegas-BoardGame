@@ -45,7 +45,7 @@ namespace Las_Vegas
             Array.Clear(arrColerDice, 0, 6);
             Array.Clear(arrWhiteDice, 0, 6);
 
-            for (int i = 0; i < (this.colerDiceCount); i++)//칼라 주사위 굴리지
+            for (int i = 0; i < (this.colerDiceCount); i++)//칼라 주사위 굴리기
             {
                 temp = rand.Next(1, 6);
                 this.arrColerDice[temp] += 1;
@@ -107,7 +107,9 @@ namespace Las_Vegas
                 Console.Write("    " + this.arrWhiteDice[i]);
 
             }
-
+            Console.Write("\n");
+            Console.WriteLine("칼라 주사위 갯수 : " + colerDiceCount);
+            Console.WriteLine("흰색 주사위 갯수 : " + whiteDiceCount);
         }
 
     }
