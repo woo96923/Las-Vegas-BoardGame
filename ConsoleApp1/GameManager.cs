@@ -12,6 +12,7 @@ namespace Las_Vegas
          주사위 클래스
          - 주사위와 관련된 데이터들을 관리하는 클래스이다.
            주사위를 굴리고 고르고하는 등 주사위의 데이터를 해당 클래스에서 전부 관리한다.
+            + 돈도 가진다.
          */
         private int playerCount;
         private int color;
@@ -19,6 +20,7 @@ namespace Las_Vegas
         private int whiteDiceCount;
         private int[] arrColerDice = new int[6];
         private int[] arrWhiteDice = new int[6];
+        private int playerMoney;
 
         Random rand = new Random();//무작위 변수생성을 위한 선언
 
@@ -40,6 +42,7 @@ namespace Las_Vegas
             {
                 this.colerDiceCount = 8;
             }
+            this.playerMoney = 0;
         }
 
         public void rollDice()//주사위 굴리기(내가 가진 주사위 갯수만큼)
@@ -102,6 +105,20 @@ namespace Las_Vegas
             return this.color;
         }
 
+        public int getDiceNum()
+        {
+            return this.colerDiceCount + this.whiteDiceCount;
+        }
+        public int getMoney()
+        {
+            return this.playerMoney;
+        }
+
+
+        public void addMoney(int money)
+        {
+            this.playerMoney += money;
+        }
         /*
          이는 GameManagerTest를 통해서 디버깅을 하기위한 메소드이다.
          게임을 플레이할 수 있도록 콘솔창에 정보들을 출력해주는 메소드이므로
@@ -194,8 +211,100 @@ namespace Las_Vegas
             }
         }
 
+        private int findMaxMoney(int casioNum)
+        {
+            int max=0;
+            foreach (var money in casinoMoney[casioNum])
+            {
+                if (max < money) max = money;
+            }
+            casinoMoney[casioNum].Remove(max);
+            return max;
+        }
 
+        private int findSameDice(int casioNum)
+        {
+            int max = 0;
+            int diceCount;
+            for (int i = 0; i < 5; i++)
+            {
+                diceCount = this.casinoDice[casioNum, i];
+                if (max < diceCount&& diceCount != 0) max = diceCount;
+                else if (max == diceCount && diceCount != 0) return diceCount;
+            }
+            return -1;
+        }
 
+        private int findMaxDice(int casioNum)
+        {
+            int max = 0;
+            int coler = -1;
+            for (int i = 0; i < 5; i++)
+            {
+                int diceCount;
+                diceCount = this.casinoDice[casioNum, i];
+                if (max < diceCount) 
+                {
+                    max = diceCount;
+                    coler = i;
+                }
+                
+                
+            }
+            if(coler != -1) this.casinoDice[casioNum, coler] = 0;
+            return coler;
+        }
+
+        public void endGame(Dice[] players)
+        {
+            for (int i = 0; i < 6; i++)//주사위 중복되는거 지우는 과정
+            {
+                while( findSameDice(i)!= -1)
+                {
+                    int temp = findSameDice(i);
+                    for (int j = 0; j < 5; j++)
+                    {
+                        if (this.casinoDice[i, j] == temp) this.casinoDice[i, j] = 0;
+                    }
+                    
+                }
+            }
+
+            for (int i = 0; i < 6; i++) 
+            {
+                if (casinoMoney[i].Count == 0)
+                {
+                    continue;
+                }
+                int temp = this.findMaxDice(i);
+                if(temp == -1)
+                {
+                    continue;
+                }
+                if (temp == 4) continue;
+                players[temp].addMoney(findMaxMoney(i));
+
+            }//주사위 중복되는거 지우는 과정
+                
+
+        }
+
+        public void printScore(int playerCount, Dice[] players)
+        {
+            for (int i = 0; i < playerCount; i++)
+            {
+                if (i == 0) { Console.Write("Red       "); }
+                else if (i == 1) { Console.Write("Green     "); }
+                else if (i == 2) { Console.Write("Blue      "); }
+                else if (i == 3) { Console.Write("Black     "); }
+                else if (i == 4) { Console.Write("White     "); }
+                else { Debug.Assert(true, "Wroung color Number"); }
+                Console.Write("     " + players[i].getMoney());
+                
+
+                Console.Write("\n");
+            }
+        }
 
 
         public void printBoard()
